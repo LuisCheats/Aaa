@@ -1,0 +1,16 @@
+[
+    {
+    "id": "#01",
+    "date": "2025-12-28",
+    "title": "Update Endpoint", 
+    "message": "Menambahkan Beberapa Fitur Terbaru Ygy",
+    "read": false
+    },
+  {
+    "id": "#02",
+    "date": "2025-09-07",
+    "title": "Sistem Rest API", 
+    "message": "Perubahan Design dan perbaikan bug",
+    "read": true
+  }
+]
