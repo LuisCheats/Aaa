@@ -1,41 +1,26 @@
-// src/api/search/download-ytmp3.js
-const axios = require('axios');
-
+const yts = require('yt-search');
+    
 module.exports = function(app) {
-    app.get('/download/ytmp3', async (req, res) => {
-        const { url } = req.query;
-        
-        if (!url) {
-            return res.status(400).json({
-                status: false,
-                error: 'Debes enviar una URL de YouTube'
-            });
+app.get('/search/youtube', async (req, res) => {
+        const { q } = req.query;
+        if (!q) {
+            return res.status(400).json({ status: false, error: 'Query is required' });
         }
-
         try {
-            // Llamamos a la API externa
-            const response = await axios.get(`https://ruby-core.vercel.app/api/download/youtube/mp3?url=${encodeURIComponent(url)}`);
-            
-            if (!response.data || response.data.error) {
-                return res.status(500).json({
-                    status: false,
-                    error: response.data?.error || 'No se pudo obtener el MP3'
-                });
-            }
-
-            // Retornamos los datos al bot
+            const ytResults = await yts.search(q);
+            const ytTracks = ytResults.videos.map(video => ({
+                title: video.title,
+                channel: video.author.name,
+                duration: video.duration.timestamp,
+                imageUrl: video.thumbnail,
+                link: video.url
+            }));
             res.status(200).json({
                 status: true,
-                title: response.data.title,   // Título del video
-                thumbnail: response.data.thumbnail, // Miniatura
-                downloadUrl: response.data.result // URL del MP3
+                result: ytTracks
             });
-
-        } catch (err) {
-            res.status(500).json({
-                status: false,
-                error: err.message
-            });
+        } catch (error) {
+            res.status(500).json({ status: false, error: error.message });
         }
     });
-};
+}
